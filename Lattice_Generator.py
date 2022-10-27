@@ -2,38 +2,22 @@ import numpy as np
 import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
+from networkx import nx_pydot
+from utils import *
+
+number_of_lattices_to_generate = 9
 
 
-def is_transitive(mat):
-    n = np.size(mat[0])
-
-    trans = True
-
-    i = 1
-    while i < n-1:
-        j = i+1
-        while j < n-1:
-            if mat[i,j] == 1:
-                k = j + 1
-                while k < n - 1:
-                    if mat[j,k] == 1:
-                        if mat[i,k] == 0:
-                            trans = False
-                    k +=1
-            j += 1
-        i += 1
-
-    return trans
 
 
-def generate_adiacency_matrices(n,domain_pairs,assignments, sampling=None):
+def generate_LoQ_matrices(n,domain_pairs,assignments, sampling):
     matrices_list = []
 
     if sampling:
-        random_assignments = np.random.rand(assignments)[:10]
+        random_assignments = np.random.rand(assignments)[:number_of_lattices_to_generate]
 
         for a in random_assignments:
-            new_matrix = np.triu(np.ones([n, n]), k=1)
+            new_matrix = np.triu(np.ones([n, n]))
 
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0], p[1]] = a[j]
@@ -43,7 +27,7 @@ def generate_adiacency_matrices(n,domain_pairs,assignments, sampling=None):
 
     else:
         for a in assignments:
-            new_matrix = np.triu(np.ones([n,n]),k=1)
+            new_matrix = np.triu(np.ones([n,n]))
 
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0],p[1]] = a[j]
@@ -69,7 +53,12 @@ def generate_all_lattices(n):
     num_of_pairs = len(domain_pairs)
     assignments = itertools.product([0,1],repeat=num_of_pairs)
 
-    matrices_list = generate_adiacency_matrices(n,domain_pairs,assignments)
+    if n >= 10:
+        sampling = True
+    else:
+        sampling = False
+
+    matrices_list = generate_LoQ_matrices(n,domain_pairs,assignments,sampling)
     return matrices_list
 
 
@@ -83,26 +72,27 @@ def plot_graph_from_adiacency(adjacency_matrix):
             if adjacency_matrix[i][j] == 1:
                 G.add_edge(i,j)
 
-    TR = nx.transitive_reduction(G)
+    # G = nx.transitive_reduction(G)
 
-    print(TR.adj)
+    # print(TR.adj)
 
-    pos = nx.planar_layout(G)
+    # pos = nx.nx_pydot.pydot_layout(,adjacency_matrix,root=0)
     # degree = [n for n in G.in_degree()]
     # print(degree)
 
-    nx.draw(TR, labels={i:str(i) for i in range(n)}, pos=pos)
+    # nx.draw(TR, labels={i:str(i) for i in range(n)}, pos=pos)
+    nx.draw(G, labels={i:str(i) for i in range(n)})
     plt.show()
 
 
 
 
 
-lattices = generate_all_lattices(4)
-print(lattices)
+lattices = generate_all_lattices(9)
 
 
 for i in lattices:
-    plot_graph_from_adiacency(i)
+    print(is_distributive(i))
+    # plot_graph_from_adiacency(i)
 
 
