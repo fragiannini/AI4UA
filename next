@@ -1,14 +1,37 @@
 1) Migliorare grafico: root e ordine rispetto a diversi ordini di entrata nei nodi
 ! 2) skeleton per fare il disegno?
 
-3) fare campionamento per n>=10
+! 3) fare campionamento per n>=10
 4) eliminare grafi isomorfi
 5) crea CSV o JSON (con dizionario; chiave=id grafo + attributo lst(edges))
-6) crea label distributivo o no
-7) https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
-example:
+! 6) crea label distributivo o no
+7) IMP: trova un modo di non controllare transitività, ma imporla
 
-from joblib import Parallel, delayed
 
-Parallel(n_jobs=1)(delayed(sqrt)(i**2) for i in range(10))
-[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+USEFUL CODES:
+-1: https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
+        example:
+
+        from joblib import Parallel, delayed
+
+        Parallel(n_jobs=1)(delayed(sqrt)(i**2) for i in range(10))
+        [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+
+-2: time difference:
+start = time.time()
+...
+end = time.time()
+print(end - start)
