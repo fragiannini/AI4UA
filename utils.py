@@ -2,25 +2,32 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-#TODO
+
 def is_modular(mat):
     n = np.size(mat[0])
 
-    mod = True
-    return mod
+    modular = True
+
+    for x in range(n):
+        for y in range(n):
+            for z in range(n):
+                if join(meet(x,y,mat),meet(z,y,mat),mat) != meet(join(meet(x,y,mat),z,mat),y,mat):
+                    modular = False
+                    return modular
+    return modular
 
 def is_distributive(mat):
     n = np.size(mat[0])
 
-    distr = True
+    distributive = True
 
     for x in range(n):
         for y in range(n):
             for z in range(n):
                 if meet(x,join(y,z,mat),mat) != join(meet(x,y,mat),meet(x,z,mat),mat):
-                    distr = False
-                    return distr
-    return distr
+                    distributive = False
+                    return distributive
+    return distributive
 
 def is_transitive(mat):
     n = np.size(mat[0])
@@ -44,18 +51,34 @@ def is_transitive(mat):
 
     return trans
 
-def meet(a,b,less_or_equal):
-    n = np.size(less_or_equal[0])
-    minority = [c for c in range(n) if (less_or_equal[c,a] == 1 and less_or_equal[c,b] == 1)]
+def meet(a,b,LoE):
+    n = np.size(LoE[0])
+    minority = [c for c in range(n) if (LoE[c,a] == 1 and LoE[c,b] == 1)]
     inf = max(minority)
     return inf
 
-def join(a,b,less_or_equal):
-    n = np.size(less_or_equal[0])
-    majority = [c for c in range(n) if (less_or_equal[a,c] == 1 and less_or_equal[b,c] == 1)]
+def join(a,b,LoE):
+    n = np.size(LoE[0])
+    majority = [c for c in range(n) if (LoE[a,c] == 1 and LoE[b,c] == 1)]
     sup = min(majority)
     return sup
 
+def is_lattice(LoE):
+    n = np.size(LoE[0])
+
+    for a in range(1,n-1):
+        for b in range(1, n - 1):
+            minority = [c for c in range(n) if (LoE[c, a] == 1 and LoE[c, b] == 1)]
+            inf = max(minority)
+            for m in minority:
+                if LoE[m, inf] == 0:
+                    return False
+
+            majority = [c for c in range(n) if (LoE[a, c] == 1 and LoE[b, c] == 1)]
+            sup = min(majority)
+            for M in majority:
+                if LoE[sup, M] == 0:
+                    return False
 
 
 def plot_graph_from_adiacency(adjacency_matrix):
