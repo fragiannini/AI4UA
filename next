@@ -6,7 +6,7 @@
 ! 5) crea CSV o JSON (con dizionario; chiave=id grafo + attributo lst(edges))
 ! 6) crea label distributivo o no
 7) IMP: trova un modo di non controllare transitività, ma imporla [es del prod righe/colonne]
-8) checkare reticolo: imporre leggi assorbimento
+8) checkare reticolo: chekkare operaz
 
 
 

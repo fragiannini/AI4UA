@@ -80,7 +80,6 @@ def is_lattice(LoE):
                 if LoE[sup, M] == 0:
                     return False
 
-
 def plot_graph_from_adiacency(adjacency_matrix):
     G = nx.DiGraph()
     n = np.size(adjacency_matrix[0])
