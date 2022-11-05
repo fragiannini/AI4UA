@@ -4,6 +4,7 @@
     <list default="true" id="e16f51e6-67cf-47e6-878f-379f683ef112" name="Changes" comment="generate dataset">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Lattice_Generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lattice_Generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +83,7 @@
       <workItem from="1667400730572" duration="2349000" />
       <workItem from="1667484604830" duration="378000" />
       <workItem from="1667566168154" duration="21000" />
-      <workItem from="1667643559703" duration="18151000" />
+      <workItem from="1667643559703" duration="19023000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1667405238194</created>
@@ -119,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667663278055</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="generate dataset">
+      <created>1667665036195</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1667665036195</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -146,13 +154,18 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Lattice_Generator.py</url>
-          <line>101</line>
+          <line>103</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Lattice_Generator.py</url>
+          <line>99</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/AI4UA$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1667663593686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI4UA$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1667665646307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

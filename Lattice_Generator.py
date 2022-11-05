@@ -25,7 +25,8 @@ def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0], p[1]] = candidate[j]
             new_matrix = transitive_closure(new_matrix)
-            if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            # if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            if is_lattice(new_matrix) and not has_isomorphic(new_matrix,matrices_list):
                 matrices_list.append(new_matrix)
                 tuple_taken += 1
 
@@ -38,7 +39,8 @@ def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0], p[1]] = a[j]
             new_matrix = transitive_closure(new_matrix)
-            if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            # if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            if is_lattice(new_matrix) and not has_isomorphic(new_matrix,matrices_list):
                 matrices_list.append(new_matrix)
 
     return matrices_list
