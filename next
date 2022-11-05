@@ -2,11 +2,11 @@
 ! 2) skeleton per fare il disegno?
 
 ! 3) fare campionamento per n>=10
-4) eliminare grafi isomorfi
+! 4) eliminare grafi isomorfi
 ! 5) crea CSV o JSON (con dizionario; chiave=id grafo + attributo lst(edges))
 ! 6) crea label distributivo o no
-7) IMP: trova un modo di non controllare transitività, ma imporla [es del prod righe/colonne]
-8) checkare reticolo: chekkare operaz
+! 7) IMP: trova un modo di non controllare transitività, ma imporla [es del prod righe/colonne]
+! 8) checkare reticolo: chekkare operaz
 
 
 
