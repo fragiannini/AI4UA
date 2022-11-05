@@ -6,7 +6,7 @@ import json
 
 num_lattices_to_sample = 8  # 10
 max_cardinality_to_generate_all = 8
-num = 6  # max number of nodes for lattices to generate
+num = 30  # max number of nodes for lattices to generate
 
 
 def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
@@ -25,7 +25,7 @@ def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0], p[1]] = candidate[j]
             new_matrix = transitive_closure(new_matrix)
-            if is_lattice(new_matrix) and not has_isomorphic(new_matrix,matrices_list):
+            if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
                 matrices_list.append(new_matrix)
                 tuple_taken += 1
 
@@ -38,7 +38,7 @@ def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
             for j, p in enumerate(domain_pairs):
                 new_matrix[p[0], p[1]] = a[j]
             new_matrix = transitive_closure(new_matrix)
-            if is_lattice(new_matrix) and not has_isomorphic(new_matrix,matrices_list):
+            if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
                 matrices_list.append(new_matrix)
 
     return matrices_list
@@ -57,8 +57,11 @@ def generate_lattices(n,max_cardinality_to_generate_all,num_lattices_to_sample):
 
 
 def generate_all_lattices(n,max_cardinality_to_generate_all,num_lattices_to_sample):
+    print("SETTING: ","Generate lattices up to",n,"elements;", " Max cardinality to generate all:",max_cardinality_to_generate_all,"; Num of samples:",num_lattices_to_sample)
+
     lattices_list = []
     for i in range(2, n + 1):
+        print("generating lattices with ",i," elements")
         lattices_list += generate_lattices(i,max_cardinality_to_generate_all,num_lattices_to_sample)
     return lattices_list
 
@@ -92,10 +95,9 @@ def prepare_dataset_json(lattices):
 
 
 lattices = generate_all_lattices(num,max_cardinality_to_generate_all,num_lattices_to_sample)
-
 prepare_dataset_json(lattices)
 
 
-for i in lattices:
-    # print(is_distributive(i))
-    plot_graph_from_adiacency(LoE2Adj(i))
+# for i in lattices:
+#     # print(is_distributive(i))
+#     plot_graph_from_adiacency(LoE2Adj(i))
