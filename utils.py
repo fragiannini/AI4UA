@@ -1,6 +1,9 @@
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import json
+import itertools
+from lattice import Lattice
 
 
 def is_modular(mat):
@@ -58,14 +61,16 @@ def transitive_closure(mat):
 
 def meet(a, b, LoE):
     n = np.size(LoE[0])
-    minority = [c for c in range(n) if (LoE[c, a] == 1 and LoE[c, b] == 1)]
+    minority = [c for c in range(min(a, b)+1) if (LoE[c, a] == 1 and LoE[c, b] == 1)]
+    if minority == []:
+        print(LoE)
     inf = max(minority)
     return inf
 
 
 def join(a, b, LoE):
     n = np.size(LoE[0])
-    majority = [c for c in range(n) if (LoE[a, c] == 1 and LoE[b, c] == 1)]
+    majority = [c for c in range(max(a, b), n) if (LoE[a, c] == 1 and LoE[b, c] == 1)]
     sup = min(majority)
     return sup
 
@@ -90,6 +95,7 @@ def join(a, b, LoE):
 
 
 def is_lattice(LoE):
+    #Todo: c'è un errore da qualche parte
     n = np.size(LoE[0])
     adj = LoE2Adj(LoE,reflexive=True)
 
@@ -159,3 +165,142 @@ def plot_graph_from_adiacency(adjacency_matrix):
     # nx.draw(TR, labels={i:str(i) for i in range(n)}, pos=pos)
     nx.draw(G, labels={i: str(i) for i in range(n)}, pos=nx.planar_layout(G))
     plt.show()
+
+def generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample):
+    matrices_list = []
+
+    # number of pairs to define possible functions
+    num_of_pairs = len(domain_pairs)
+
+    if sampling:
+        tuple_taken = len(matrices_list)
+        while tuple_taken < num_lattices_to_sample:
+            candidate = np.random.choice([0, 1], size=num_of_pairs)
+
+            new_matrix = np.triu(np.ones([n, n]))  # , k=1
+            # new_matrix = np.triu(np.ones([n, n]), k=1)
+            for j, p in enumerate(domain_pairs):
+                new_matrix[p[0], p[1]] = candidate[j]
+            new_matrix = transitive_closure(new_matrix)
+            # if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            #if is_lattice(new_matrix) and not has_isomorphic(new_matrix,matrices_list):
+            if not has_isomorphic(new_matrix, matrices_list):
+                matrices_list.append(new_matrix)
+                tuple_taken += 1
+
+    else:
+        assignments = itertools.product([0, 1], repeat=num_of_pairs)
+        for a in assignments:
+            new_matrix = np.triu(np.ones([n, n]))  # , k=1
+            # new_matrix = np.triu(np.ones([n,n]), k=1)
+
+            for j, p in enumerate(domain_pairs):
+                new_matrix[p[0], p[1]] = a[j]
+            new_matrix = transitive_closure(new_matrix)
+            # if is_lattice(new_matrix): # and not has_isomorphic(new_matrix,matrices_list):
+            #if is_lattice(new_matrix) and not has_isomorphic(new_matrix, matrices_list):
+            if not has_isomorphic(new_matrix, matrices_list):
+                matrices_list.append(new_matrix)
+
+    return matrices_list
+
+
+def generate_lattices(n,max_cardinality_to_generate_all,num_lattices_to_sample):
+    domain_pairs = [[i, j] for i in range(1, n - 1) for j in range(i + 1, n - 1)]
+
+    if n > max_cardinality_to_generate_all:
+        sampling = True
+    else:
+        sampling = False
+
+    matrices_list_for_cardinality = generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample)
+    return matrices_list_for_cardinality
+
+
+def generate_lattices_classes(n, max_cardinality_to_generate_all, num_lattices_to_sample):
+    domain_pairs = [[i, j] for i in range(1, n - 1) for j in range(i + 1, n - 1)]
+    if n > max_cardinality_to_generate_all:
+        sampling = True
+    else:
+        sampling = False
+
+    matrices_list_for_cardinality = generate_LoE_matrices(n, domain_pairs, sampling, num_lattices_to_sample)
+    lattices = [Lattice(loe) for loe in matrices_list_for_cardinality]
+    return lattices
+
+
+def generate_all_lattices(n,max_cardinality_to_generate_all,num_lattices_to_sample):
+    print("SETTING: ","Generate lattices up to",n,"elements;", " Max cardinality to generate all:",max_cardinality_to_generate_all,"; Num of samples:",num_lattices_to_sample)
+
+    lattices_list = []
+    for i in range(2, n + 1):
+        print("generating lattices with ",i," elements")
+        lattices_list += generate_lattices(i,max_cardinality_to_generate_all,num_lattices_to_sample)
+    return lattices_list
+
+
+def generate_all_lattices_classes(n, max_cardinality_to_generate_all, num_lattices_to_sample):
+    print("SETTING: ","Generate lattices up to", n, "elements;", " Max cardinality to generate all:",
+          max_cardinality_to_generate_all, "; Num of samples:", num_lattices_to_sample)
+
+    lattices_list = []
+    for i in range(2, n + 1):
+        print("generating lattices with ", i, " elements")
+        lattices_list += generate_lattices_classes(i, max_cardinality_to_generate_all, num_lattices_to_sample)
+    return lattices_list
+
+
+def prepare_dataset_json(lattices):
+    # FIELD: graph_cardinality; LoE_mat; adj_mat; distribut; modularity
+
+    with open("sample.json", "w") as outfile:
+        for i, latt in enumerate(lattices):
+            #preparing fields
+            ID = "G" + str(i)
+            card = np.size(latt[0])
+            LoE_mat = latt
+            Adj_mat = LoE2Adj(latt)
+            Distr = is_distributive(latt)
+            Mod = is_modular(latt)
+
+            dictionary = {
+                "ID": ID,
+                "Cardinality": card,
+                "LoE_matrix": LoE_mat.tolist(),
+                "Adj_matrix": Adj_mat.tolist(),
+                "Distributive": Distr,
+                "Modular": Mod
+            }
+            # create and write json lattice
+            json_object = json.dumps(dictionary)
+            outfile.write(json_object + "\n")
+
+    outfile.close()
+
+def prepare_dataset_json_class(lattices):
+    # FIELD: graph_cardinality; LoE_mat; adj_mat; distribut; modularity
+
+    with open("sample.json", "w") as outfile:
+        for i, latt in enumerate(lattices):
+            if latt.is_a_lattice:
+                #preparing fields
+                ID = "G" + str(i)
+                card = latt.size
+                LoE_mat = latt.loe
+                Adj_mat = latt.adj
+                Distr = latt.dist
+                Mod = latt.mod
+
+                dictionary = {
+                    "ID": ID,
+                    "Cardinality": card,
+                    "LoE_matrix": LoE_mat.tolist(),
+                    "Adj_matrix": Adj_mat.tolist(),
+                    "Distributive": Distr,
+                    "Modular": Mod
+                }
+                # create and write json lattice
+                json_object = json.dumps(dictionary)
+                outfile.write(json_object + "\n")
+
+    outfile.close()
