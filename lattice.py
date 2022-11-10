@@ -41,6 +41,10 @@ class Lattice:
         '''
             Compute the majority/minority matrix multipling raws/columns of loe
         '''
+        #TODO do with kronecker product
+        # torch.kron(random_tensor_one_ex, random_tensor_two_ex)[:, [0, 4, 8]]
+        # a: np.array
+        # a_t = torch.FloatTensor(a)
         majority_matrix = np.array(
             [[np.multiply(self.loe[n, :], self.loe[m, :]) for n in range(self.size)] for m in range(self.size)])
         minority_matrix = np.array(
@@ -56,10 +60,11 @@ class Lattice:
             grater that it = to the corresponding component in the obtained vector.
         '''
         try:
-            join_martrix = np.array([[np.multiply(np.matmul(self.loe, self.majority_matrix[n, m]),
-                                      self.majority_matrix[n, m]).tolist().index(np.matmul(self.majority_matrix[n, m],
-                                                                                           self.majority_matrix[n, m]))
-                                      for n in range(self.size)] for m in range(self.size)])
+            join_martrix = np.array([
+                [np.matmul(np.transpose(self.loe), self.majority_matrix[n, m]).tolist().index(1)
+                 for n in range(self.size)] for m in range(self.size)])
+
+####TODO fixa il meet e join
             meet_matrix = np.array([[np.multiply(np.matmul(self.minority_matrix[n, m], self.loe),
                                      self.minority_matrix[n, m]).tolist().index(np.matmul(self.minority_matrix[n, m],
                                                                                           self.minority_matrix[n, m]))
