@@ -1,24 +1,27 @@
 import numpy as np
 import itertools
+import torch
 
 
 class Lattice:
-    def __init__(self, loe=None):
-        self.loe = loe
+    def __init__(self, loe=torch.zeros(1)):
+        # self.loe = loe
+        self.loe = torch.from_numpy(loe)
+        self.loe_transposed = torch.transpose(self.loe, 0, 1)
         self.adj = None
         self.size = np.size(self.loe[0])
-        self.majority_matrix = None
-        self.minority_matrix = None
-        self.join_matrix = None
-        self.meet_matrix = None
+        self.majority_tensor = None
+        self.minority_tensor = None
+        self.join_tensor = None
+        self.meet_tensor = None
         self.is_a_lattice = False
         self.dist = False
         self.mod = False
 
         #compute the matrices of majorities and minorities, for al n,m maj[n,m] = [0,..,0,1,0...] 1 for elements that are >= n,m 0 otherwise
-        self.majority_matrix, self.minority_matrix = self.compute_majmin_matrices()
+        self.majority_tensor, self.minority_tensor = self.compute_majmin_tensors()
         #compute matrices of join and meet where join_matrix[n,m] = join(n,m)
-        self.join_mat, self.meet_mat, self.is_a_lattice = self.compute_joinmeet()
+        self.join_tensor, self.meet_tensor, self.is_a_lattice = self.compute_joinmeet()
 
         if self.is_a_lattice:
             self.dist = self.is_distributive()
@@ -27,30 +30,27 @@ class Lattice:
 
     def is_distributive(self):
         for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.meet_mat[x, self.join_mat[y, z]] != self.join_mat[self.meet_mat[x, y], self.meet_mat[x, z]]:
+            if self.meet_tensor[x, self.join_tensor[y, z]] != self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[x, z]]:
                 return False
         return True
 
     def is_modular(self):
         for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.join_mat[self.meet_mat[x, y], self.meet_mat[z, y]] != self.meet_mat[self.join_mat[self.meet_mat[x, y], z], y]:
+            if self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[z, y]] != self.meet_tensor[self.join_tensor[self.meet_tensor[x, y], z], y]:
                 return False
         return True
 
-    def compute_majmin_matrices(self):
+    def compute_majmin_tensors(self):
         '''
             Compute the majority/minority matrix multipling raws/columns of loe
         '''
-        #TODO do with kronecker product
-        # torch.kron(random_tensor_one_ex, random_tensor_two_ex)[:, [0, 4, 8]]
-        # a: np.array
-        # a_t = torch.FloatTensor(a)
-        majority_matrix = np.array(
-            [[np.multiply(self.loe[n, :], self.loe[m, :]) for n in range(self.size)] for m in range(self.size)])
-        minority_matrix = np.array(
-            [[np.multiply(self.loe[:, n], self.loe[:, m]) for n in range(self.size)] for m in range(self.size)])
 
-        return majority_matrix, minority_matrix
+        idx_kron = [i*(self.size+1) for i in range(self.size)]
+
+        majority_tensor = torch.kron(self.loe, self.loe)[:, [idx_kron]].reshape(self.size, self.size, self.size)
+        minority_tensor = torch.kron(self.loe_transposed, self.loe_transposed)[:, [idx_kron]].reshape(self.size, self.size, self.size)
+
+        return majority_tensor, minority_tensor
 
     def compute_joinmeet(self):
         '''
@@ -59,23 +59,23 @@ class Lattice:
             than a majority n is computed and then the join of a pair (a,b) is detached as the majority that as # of majorities
             grater that it = to the corresponding component in the obtained vector.
         '''
-        try:
-            join_martrix = np.array([
-                [np.matmul(np.transpose(self.loe), self.majority_matrix[n, m]).tolist().index(1)
-                 for n in range(self.size)] for m in range(self.size)])
 
-####TODO fixa il meet e join
-            meet_matrix = np.array([[np.multiply(np.matmul(self.minority_matrix[n, m], self.loe),
-                                     self.minority_matrix[n, m]).tolist().index(np.matmul(self.minority_matrix[n, m],
-                                                                                          self.minority_matrix[n, m]))
-                                     for n in range(self.size)] for m in range(self.size)])
+
+        try:
+            join_tensor_full = torch.matmul(self.majority_tensor, self.loe)
+            join_tensor = (join_tensor_full == 1).nonzero(as_tuple=True)[-1].reshape(self.size, self.size)
+
+            meet_tensor_full = torch.matmul(self.minority_tensor, self.loe_transposed)
+            meet_tensor = (meet_tensor_full == 1).nonzero(as_tuple=True)[-1].reshape(self.size, self.size)
+
             is_a_lattice = True
+
         except:
-            join_martrix = None
-            meet_matrix = None
+            join_tensor = None
+            meet_tensor = None
             is_a_lattice = False
 
-        return join_martrix, meet_matrix, is_a_lattice
+        return join_tensor, meet_tensor, is_a_lattice
 
     def loe2adj(self, reflexive=False):
         adj = np.copy(self.loe)

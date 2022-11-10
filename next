@@ -12,6 +12,7 @@ a 1) Migliorare grafico: root e ordine rispetto a diversi ordini di entrata nei 
 ! 10) join e meet sono matrici simmetriche, sfruttare questo per speed up
 ! 11) velocizzare is_isomorphic utilizzando https://pallini.di.uniroma1.it dovrebbe essere molto più veloce ma non so come
       si utilizza
+12) diagrammi di Hasse per fare il plot: https://groups.google.com/g/networkx-discuss/c/DpdUIwb6aQ0?pli=1
 
 
 

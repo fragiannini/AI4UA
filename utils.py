@@ -52,7 +52,7 @@ def transitive_closure(mat):
     n = np.size(mat[0])
 
     for i in range(n):
-        mat_trans = np.where(np.matmul(mat, mat) > 0, 1., 0.)
+        mat_trans = np.where(np.matmul(mat, mat) > 0., 1., 0.)
         if np.array_equal(mat_trans, mat):
             return mat_trans
         mat = mat_trans
@@ -152,6 +152,9 @@ def has_isomorphic(latt,latt_list):
 
 
 def plot_graph_from_adiacency(adjacency_matrix):
+    #TODO: cerca diagrammi di Hasse
+
+    adjacency_matrix = LoE2Adj(adjacency_matrix)
     G = nx.DiGraph()
     n = np.size(adjacency_matrix[0])
     for i in range(n):
@@ -160,9 +163,7 @@ def plot_graph_from_adiacency(adjacency_matrix):
                 G.add_edge(i, j)
 
     # TR = nx.transitive_reduction(G)
-    # TR = G
 
-    # nx.draw(TR, labels={i:str(i) for i in range(n)}, pos=pos)
     nx.draw(G, labels={i: str(i) for i in range(n)}, pos=nx.planar_layout(G))
     plt.show()
 
