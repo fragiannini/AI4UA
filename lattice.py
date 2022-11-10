@@ -5,11 +5,10 @@ import torch
 
 class Lattice:
     def __init__(self, loe=torch.zeros(1)):
-        # self.loe = loe
         self.loe = torch.from_numpy(loe)
         self.loe_transposed = torch.transpose(self.loe, 0, 1)
         self.adj = None
-        self.size = np.size(self.loe[0])
+        self.size = self.loe.size(dim=1)
         self.majority_tensor = None
         self.minority_tensor = None
         self.join_tensor = None
