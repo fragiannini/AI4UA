@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e16f51e6-67cf-47e6-878f-379f683ef112" name="Changes" comment="generate dataset">
+    <list default="true" id="e16f51e6-67cf-47e6-878f-379f683ef112" name="Changes" comment="tensor lattices">
+      <change afterPath="$PROJECT_DIR$/obsolete_functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lattice_Generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lattice_Generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lattice.py" beforeDir="false" afterPath="$PROJECT_DIR$/lattice.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lattice_Generator.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/next" beforeDir="false" afterPath="$PROJECT_DIR$/next" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample_saved.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,15 +35,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/pato8/PycharmProjects/AI4UA/old/old_no_classes&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;web.server&quot;
   }
-}]]></component>
-  <component name="RunManager">
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\pato8\PycharmProjects\AI4UA\old\old_no_classes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.runner">
     <configuration name="Lattice_Generator" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="AI4UA" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,8 +72,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="runner" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AI4UA" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runner.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.runner" />
         <item itemvalue="Python.Lattice_Generator" />
       </list>
     </recent_temporary>
@@ -89,7 +119,11 @@
       <workItem from="1667566168154" duration="21000" />
       <workItem from="1667643559703" duration="19023000" />
       <workItem from="1668002881343" duration="5432000" />
-      <workItem from="1668096576656" duration="4702000" />
+      <workItem from="1668096576656" duration="4971000" />
+      <workItem from="1668125373207" duration="2247000" />
+      <workItem from="1668155532201" duration="113000" />
+      <workItem from="1668157814601" duration="1086000" />
+      <workItem from="1668170457448" duration="6584000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1667405238194</created>
@@ -133,7 +167,21 @@
       <option name="project" value="LOCAL" />
       <updated>1667665036195</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="tensor lattices">
+      <created>1668101349674</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1668101349674</updated>
+    </task>
+    <task id="LOCAL-00008" summary="tensor lattices">
+      <created>1668101421449</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1668101421449</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,36 +201,23 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updates" />
     <MESSAGE value="generate dataset" />
-    <option name="LAST_COMMIT_MESSAGE" value="generate dataset" />
+    <MESSAGE value="tensor lattices" />
+    <option name="LAST_COMMIT_MESSAGE" value="tensor lattices" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/utils.py</url>
-          <line>228</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/utils.py</url>
-          <line>202</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/utils.py</url>
-          <line>54</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/utils.py</url>
-          <line>216</line>
-          <option name="timeStamp" value="23" />
+          <line>31</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Lattice_Generator_py$utils.coverage" NAME="utils Coverage Results" MODIFIED="1666883988040" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI4UA$runner.coverage" NAME="runner Coverage Results" MODIFIED="1668175683407" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AI4UA$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1668096770754" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Lattice_Generator_py$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1667895417124" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
