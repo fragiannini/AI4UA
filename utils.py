@@ -27,7 +27,6 @@ def has_isomorphic(latt, latt_list):
 
 
 def plot_graph_from_lattice(lattice):
-    # TODO: cerca diagrammi di Hasse
 
     G = nx.DiGraph(lattice.adj)
     nx.draw(G, labels={i: str(i) for i in range(lattice.size)}, pos=nx.planar_layout(G))
