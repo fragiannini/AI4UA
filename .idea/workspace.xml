@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e16f51e6-67cf-47e6-878f-379f683ef112" name="Changes" comment="F: updates with JSON">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AI4UA.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AI4UA.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/obsolete_functions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sample.json" beforeDir="false" afterPath="$PROJECT_DIR$/sample.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sample_saved.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +36,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "last_opened_file_path": "C:/Users/pato8/PycharmProjects/AI4UA/old/old_no_classes",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "web.server"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -206,7 +199,14 @@
       <option name="project" value="LOCAL" />
       <updated>1668101421449</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="F: updates with JSON">
+      <created>1675353165612</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1675353165612</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -227,7 +227,8 @@
     <MESSAGE value="updates" />
     <MESSAGE value="generate dataset" />
     <MESSAGE value="tensor lattices" />
-    <option name="LAST_COMMIT_MESSAGE" value="tensor lattices" />
+    <MESSAGE value="F: updates with JSON" />
+    <option name="LAST_COMMIT_MESSAGE" value="F: updates with JSON" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -246,6 +247,6 @@
     <SUITE FILE_PATH="coverage/AI4UA$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1666809994990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Lattice_Generator_py$runner_old.coverage" NAME="runner_old Coverage Results" MODIFIED="1675344588203" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Lattice_Generator_py$Lattice_Generator.coverage" NAME="Lattice_Generator Coverage Results" MODIFIED="1667895417124" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Lattice_Generator_py$runner.coverage" NAME="runner Coverage Results" MODIFIED="1675353021290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Lattice_Generator_py$runner.coverage" NAME="runner Coverage Results" MODIFIED="1675353417192" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

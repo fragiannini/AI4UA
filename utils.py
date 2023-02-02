@@ -17,6 +17,7 @@ def transitive_closure(mat):
     return mat
 
 
+# TODO: remove isomorphic lattices in future versions
 def has_isomorphic(latt, latt_list):
     G = nx.from_numpy_matrix(latt.adj, create_using=nx.DiGraph)
     for mat in latt_list:
@@ -67,7 +68,7 @@ def lattices_generator_per_cardinality(n, sampling, num_lattices_to_sample):
 
 def generate_all_lattices(n, max_cardinality_to_generate_all, num_lattices_to_sample):
     print("SETTING: ", "Generate lattices up to", n, "elements;", " Max cardinality to generate all:",
-          max_cardinality_to_generate_all, "; Num of samples:", num_lattices_to_sample)
+          max_cardinality_to_generate_all, "; Number of samples:", num_lattices_to_sample)
     lattices_list = []
     sampling = False
     for m in range(2, n + 1):
