@@ -16,6 +16,9 @@ class Lattice:
         self.is_a_lattice = False
         self.dist = False
         self.mod = False
+        self.meet_semi_dist = False
+        self.join_semi_dist = False
+        self.semi_dist = False
 
         #compute the matrices of majorities and minorities, for al n,m maj[n,m] = [0,..,0,1,0...] 1 for elements that are >= n,m 0 otherwise
         self.majority_tensor, self.minority_tensor = self.compute_majmin_tensors()
@@ -25,6 +28,9 @@ class Lattice:
         if self.is_a_lattice:
             self.dist = self.is_distributive()
             self.mod = self.is_modular()
+            self.meet_semi_dist = self.is_meet_semidistributive()
+            self.join_semi_dist = self.is_join_semidistributive()
+            self.semi_dist = self.is_semidistributive()
             self.adj = self.loe2adj()
 
     def is_distributive(self):
@@ -91,15 +97,63 @@ class Lattice:
 
 
     def is_meet_semidistributive(self):
-        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.meet_tensor[x, y] == self.meet_tensor[x, z] and self.meet_tensor[x, self.join_tensor[y, z]] != self.meet_tensor[x, y]:
-                return False
+        # old slow
+        # for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+        #     if self.meet_tensor[x, y] == self.meet_tensor[x, z] and self.meet_tensor[x, self.join_tensor[y, z]] != self.meet_tensor[x, y]:
+        #         return False
+        # return True
+
+        tensor_size = [self.size, self.size, self.size]
+
+        # condition 1: (x & y) == (x & z)
+        # x & y:
+        x_meet_y_tensor = self.meet_tensor.repeat_interleave(self.size, dim=1).reshape(tensor_size)
+        # x & z:
+        x_meet_z_tensor = x_meet_y_tensor.transpose(1, 2)
+        condition_1 = x_meet_y_tensor == x_meet_z_tensor
+
+        # condition 2: (x & y) == (x & (y | z))
+        # x:
+        x = torch.tensor(np.arange(self.size))
+        x_tensor = x.repeat_interleave(self.size * self.size, dim=0).reshape(tensor_size)
+        # y | z:
+        y_join_z_tensor = self.join_tensor.expand(tensor_size)
+        # x & (y | z)
+        x_meet__y_join_z_tensor = self.meet_tensor[x_tensor, y_join_z_tensor]
+        condition_2 = x_meet_y_tensor == x_meet__y_join_z_tensor
+
+        if torch.any(torch.logical_and(condition_1, torch.logical_not(condition_2))):
+            return False
         return True
 
+
     def is_join_semidistributive(self):
-        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.join_tensor[x, y] == self.join_tensor[x, z] and self.join_tensor[x, self.meet_tensor[y, z]] != self.join_tensor[x, y]:
-                return False
+        # for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+        #     if self.join_tensor[x, y] == self.join_tensor[x, z] and self.join_tensor[x, self.meet_tensor[y, z]] != self.join_tensor[x, y]:
+        #         return False
+        # return True
+
+        tensor_size = [self.size, self.size, self.size]
+
+        # condition 1: (x | y) == (x | z)
+        # x | y:
+        x_join_y_tensor = self.join_tensor.repeat_interleave(self.size, dim=1).reshape(tensor_size)
+        # x | z:
+        x_join_z_tensor = x_join_y_tensor.transpose(1, 2)
+        condition_1 = x_join_y_tensor == x_join_z_tensor
+
+        # condition 2: (x | y) == (x | (y & z))
+        # x:
+        x = torch.tensor(np.arange(self.size))
+        x_tensor = x.repeat_interleave(self.size * self.size, dim=0).reshape(tensor_size)
+        # y & z:
+        y_meet_z_tensor = self.meet_tensor.expand(tensor_size)
+        # x | (y & z)
+        x_join__y_meet_z_tensor = self.join_tensor[x_tensor, y_meet_z_tensor]
+        condition_2 = x_join_y_tensor == x_join__y_meet_z_tensor
+
+        if torch.any(torch.logical_and(condition_1, torch.logical_not(condition_2))):
+            return False
         return True
 
     def is_semidistributive(self):
