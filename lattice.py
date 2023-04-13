@@ -39,6 +39,23 @@ class Lattice:
                 return False
         return True
 
+    def is_meet_semidistributive(self):
+        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+            if self.meet_tensor[x, y] == self.meet_tensor[x, z] and self.meet_tensor[x, self.join_tensor[y, z]] != self.meet_tensor[x, y]:
+                return False
+        return True
+
+    def is_join_semidistributive(self):
+        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+            if self.join_tensor[x, y] == self.join_tensor[x, z] and self.join_tensor[x, self.meet_tensor[y, z]] != self.join_tensor[x, y]:
+                return False
+        return True
+
+    def is_semidistributive(self):
+        if self.is_join_semidistributive() and self.is_meet_semidistributive():
+            return True
+        return False
+
     def compute_majmin_tensors(self):
         '''
             Compute the majority/minority matrix multipling raws/columns of loe
