@@ -28,16 +28,67 @@ class Lattice:
             self.adj = self.loe2adj()
 
     def is_distributive(self):
-        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.meet_tensor[x, self.join_tensor[y, z]] != self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[x, z]]:
-                return False
+        ### old slowest
+        # for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+        #     if self.meet_tensor[x, self.join_tensor[y, z]] != self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[x, z]]:
+                # return False
+        # return True
+        tensor_size = [self.size,self.size,self.size]
+        ### left-side: x & (y | z)
+        # x:
+        x = torch.tensor(np.arange(self.size))
+        x_tensor = x.repeat_interleave(self.size*self.size, dim=0).reshape(tensor_size)
+        # y | z:
+        y_join_z_tensor = self.join_tensor.expand(tensor_size)
+        # x & (y | z)
+        left_side = self.meet_tensor[x_tensor,y_join_z_tensor]
+
+        ### right-side: (x & y) | (x & z)
+        # x & y:
+        x_meet_y_tensor = self.meet_tensor.repeat_interleave(self.size, dim=1).reshape(tensor_size)
+        # x & z:
+        x_meet_z_tensor = x_meet_y_tensor.transpose(1,2)
+        # (x & y) | (x & z)
+        right_side = self.join_tensor[x_meet_y_tensor, x_meet_z_tensor]
+        if not torch.equal(left_side,right_side):
+            return False
         return True
 
+
     def is_modular(self):
-        for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
-            if self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[z, y]] != self.meet_tensor[self.join_tensor[self.meet_tensor[x, y], z], y]:
-                return False
+        ### old slowest
+        # for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
+        #     if self.join_tensor[self.meet_tensor[x, y], self.meet_tensor[z, y]] != self.meet_tensor[self.join_tensor[self.meet_tensor[x, y], z], y]:
+                # return False
+        # return True
+
+        tensor_size = [self.size, self.size, self.size]
+        ### left-side: (x & y) | (x & z)
+        # x & y:
+        x_meet_y_tensor = self.meet_tensor.repeat_interleave(self.size, dim=1).reshape(tensor_size)
+        # x & z:
+        x_meet_z_tensor = x_meet_y_tensor.transpose(1, 2)
+        # (x & y) | (x & z)
+        left_side = self.join_tensor[x_meet_y_tensor, x_meet_z_tensor]
+
+        ### right-side: ((x & y) | z) & x
+        # x & y:
+        # z:
+        z = torch.tensor(np.arange(self.size))
+        z_tensor = z.repeat(self.size, 1).expand(tensor_size)
+        # (x & y) | z:
+        x_meet_y__join_z_tensor = self.join_tensor[x_meet_y_tensor,z_tensor]
+        # x:
+        x_tensor = z.repeat_interleave(self.size*self.size, dim=0).reshape(tensor_size)
+        # x & ((x & y) | z):
+        right_side = self.meet_tensor[x_tensor, x_meet_y__join_z_tensor]
+
+        if not torch.equal(left_side,right_side):
+            return False
         return True
+
+
+
 
     def is_meet_semidistributive(self):
         for (x, y, z) in itertools.product(range(1, self.size-1), range(1, self.size-1), range(1, self.size-1)):
