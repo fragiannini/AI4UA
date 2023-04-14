@@ -1,11 +1,11 @@
 import numpy as np
 import itertools
 import torch
-# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cpu")
 
 class Lattice:
-    def __init__(self, loe=torch.zeros(1)):
+    def __init__(self, loe=torch.zeros(1).to(device)):
         self.loe = torch.from_numpy(loe).to(device)
         self.loe_transposed = torch.transpose(self.loe, 0, 1)
         self.adj = None
@@ -43,7 +43,7 @@ class Lattice:
         tensor_size = [self.size,self.size,self.size]
         ### left-side: x & (y | z)
         # x:
-        x = torch.tensor(np.arange(self.size))
+        x = torch.tensor(np.arange(self.size)).to(device)
         x_tensor = x.repeat_interleave(self.size*self.size, dim=0).reshape(tensor_size)
         # y | z:
         y_join_z_tensor = self.join_tensor.expand(tensor_size)
@@ -81,7 +81,7 @@ class Lattice:
         ### right-side: ((x & y) | z) & x
         # x & y:
         # z:
-        z = torch.tensor(np.arange(self.size))
+        z = torch.tensor(np.arange(self.size)).to(device)
         z_tensor = z.repeat(self.size, 1).expand(tensor_size)
         # (x & y) | z:
         x_meet_y__join_z_tensor = self.join_tensor[x_meet_y_tensor,z_tensor]
@@ -115,7 +115,7 @@ class Lattice:
 
         # condition 2: (x & y) == (x & (y | z))
         # x:
-        x = torch.tensor(np.arange(self.size))
+        x = torch.tensor(np.arange(self.size)).to(device)
         x_tensor = x.repeat_interleave(self.size * self.size, dim=0).reshape(tensor_size)
         # y | z:
         y_join_z_tensor = self.join_tensor.expand(tensor_size)
@@ -145,7 +145,7 @@ class Lattice:
 
         # condition 2: (x | y) == (x | (y & z))
         # x:
-        x = torch.tensor(np.arange(self.size))
+        x = torch.tensor(np.arange(self.size)).to(device)
         x_tensor = x.repeat_interleave(self.size * self.size, dim=0).reshape(tensor_size)
         # y & z:
         y_meet_z_tensor = self.meet_tensor.expand(tensor_size)
