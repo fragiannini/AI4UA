@@ -1,11 +1,12 @@
 import numpy as np
 import itertools
 import torch
-
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 class Lattice:
     def __init__(self, loe=torch.zeros(1)):
-        self.loe = torch.from_numpy(loe)
+        self.loe = torch.from_numpy(loe).to(device)
         self.loe_transposed = torch.transpose(self.loe, 0, 1)
         self.adj = None
         self.size = self.loe.size(dim=1)
@@ -199,7 +200,8 @@ class Lattice:
         return join_tensor, meet_tensor, is_a_lattice
 
     def loe2adj(self, reflexive=False):
-        adj = np.copy(self.loe)
+        # adj = np.copy(self.loe)
+        adj = self.loe.detach().clone()
         if not reflexive:
             for i in range(self.size):
                 adj[i, i] = 0
