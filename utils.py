@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import json
 import itertools
 from lattice import Lattice
+from torch import Tensor
 
 
 def transitive_closure(mat):
@@ -28,8 +29,7 @@ def has_isomorphic(latt, latt_list):
 
 
 def plot_graph_from_lattice(lattice):
-
-    G = nx.DiGraph(lattice.adj)
+    G = nx.DiGraph(Tensor.numpy(lattice.adj))
     nx.draw(G, labels={i: str(i) for i in range(lattice.size)}, pos=nx.planar_layout(G))
     plt.show()
 
