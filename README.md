@@ -11,6 +11,7 @@ Follow instructions in https://pytorch-geometric.readthedocs.io/en/latest/instal
 To run the code,
 
 > cd experiments
+>
 > python run.py
 
 # TODO
