@@ -5,6 +5,9 @@ import pandas as pd
 import torch
 import os
 
+
+import sys
+sys.path.append('..')
 from gnn4ua.datasets.loader import load_data
 from gnn4ua.models import BlackBoxGNN, GCoRe
 
@@ -45,7 +48,7 @@ def main():
             gnn.train()
             for epoch in range(train_epochs):
                 optimizer.zero_grad()
-                y_pred = gnn.forward(data)
+                y_pred, concepts = gnn.forward(data)
                 loss = loss_form(y_pred[train_index], data.y[train_index].argmax(dim=1))
                 loss.backward()
                 optimizer.step()
@@ -61,6 +64,17 @@ def main():
             print(f'Test accuracy: {test_auc:.4f}')
             results.append(['', test_auc, fold, 'GCoRe (ours)', label_name])
             pd.DataFrame(results, columns=cols).to_csv(os.path.join(results_dir, 'accuracy.csv'))
+
+            # TODO
+            # return gumbel softmax outputs
+            # save model weights
+            # plot t-SNE (embeddings)
+            # plot concepts (subgraphs) (make them a bit nicer -> find a way to plot the graphs s.t. the order of the nodes is clear)
+            # directed graphs
+            # the higher the ID, the higher the node should be in the figure
+            # https://tenpy.readthedocs.io/en/v0.8.1/notebooks/10_visualize_lattice.html
+            # https://github.com/dylanljones/lattpy
+            # OOD experiments would be ideal for NeurIPS (after the full pipeline)
 
 
 if __name__ == '__main__':
