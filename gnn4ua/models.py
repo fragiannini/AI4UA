@@ -57,8 +57,6 @@ class GCoRe(GraphNet):
                 ]
             ))
 
-        # TODO: here we want to add a gumbel softmax layer to extract concepts
-        #self.gumbel = F.gumbel_softmax()
         # last, we apply a set of linear layers to get the final prediction
         self.dense_layers = torch.nn.Sequential(
             Linear(emb_size, emb_size),
@@ -72,13 +70,9 @@ class GCoRe(GraphNet):
         for i, layer in enumerate(self.graph_layers):
             x = layer(x, edge_index)
 
-        
         c = F.gumbel_softmax(x)
-
         x = global_add_pool(c, batch)
-
         x = self.dense_layers(x)
-
         return torch.softmax(x, dim=-1), c
 
 
@@ -133,5 +127,4 @@ class BlackBoxGNN(GraphNet):
 
         x = global_add_pool(x, batch)
         x = self.dense_layers(x)
-
-        return torch.softmax(x, dim=-1)
+        return torch.softmax(x, dim=-1), None

@@ -17,7 +17,7 @@ To run the code,
 # TODO
 
 - [x] Return Gumbel-Softmax outputs
-- [ ] Save model weights
+- [x] Save model weights
 - [ ] Plot t-SNE reduction of the embedding space
 - [ ] Plot concepts (subgraphs) such that the higher the ID, the higher the node appears in the figure (directed graph)  
   - [ ] https://tenpy.readthedocs.io/en/v0.8.1/notebooks/10_visualize_lattice.html  
