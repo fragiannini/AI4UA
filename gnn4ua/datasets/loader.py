@@ -1,7 +1,4 @@
-import json
-
 import joblib
-import numpy as np
 import pandas as pd
 import torch
 import os
@@ -20,26 +17,23 @@ def load_data(dataset_name, label_name, root_dir='../gnn4ua/datasets/'):
         df = pd.read_json(file_name, lines=True)
         adjacency_matrices = df['Adj_matrix'].values.tolist()
 
-        # Compute the cumulative number of nodes from previous matrices
-        cumulative_nodes = [0] + list(
-            torch.cumsum(torch.tensor([len(matrix) for matrix in adjacency_matrices]), dim=0).numpy())
-
         # Compute the indices of the nonzero elements in the adjacency matrices
         edge_indices = []
         labels = []
         batch = []
+        n_nodes_seen = 0
         for i, matrix in enumerate(adjacency_matrices):
-            matrix_indices = torch.nonzero(torch.tensor(matrix, dtype=torch.float)).tolist()
-            matrix_indices_shifted = [(index[0] + cumulative_nodes[i], index[1] + cumulative_nodes[i]) for index in
-                                      matrix_indices]
+            matrix_with_self_loops = np.array(matrix) + np.eye(len(matrix))
+            matrix_indices = torch.nonzero(torch.tensor(matrix_with_self_loops, dtype=torch.float)).tolist()
+            matrix_indices_shifted = [(index[0] + n_nodes_seen, index[1] + n_nodes_seen) for index in matrix_indices]
             edge_indices.extend(matrix_indices_shifted)
             label = df[label_name].values[i].astype(int)
             labels.append(torch.LongTensor([1-label, label]))
             batch.extend(torch.LongTensor([i] * len(matrix)))
+            n_nodes_seen += len(matrix)
 
         # Create the edge index tensor
         edge_index = torch.tensor(edge_indices).t()
-        edge_index = pyg.utils.add_self_loops(edge_index)[0]
         x = torch.ones((edge_index.max().item() + 1, 1))
         y = torch.vstack(labels)
         batch = torch.hstack(batch)
