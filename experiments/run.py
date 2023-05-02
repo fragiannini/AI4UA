@@ -18,8 +18,8 @@ seed_everything(42)
 def main():
     # hyperparameters
     random_state = 42
-    datasets = ['samples_50_saved']
-    temperatures = [100]
+    dataset = 'samples_50_saved'
+    temperature = 100
     label_names = ["Distributive", "Modular", "Meet_SemiDistributive", "Join_SemiDistributive", "SemiDistributive"]
     train_epochs = 50
     emb_size = 128
@@ -31,7 +31,7 @@ def main():
 
     results = []
     cols = ['rules', 'accuracy', 'fold', 'model', 'task', 'dataset', 'temperature']
-    for dataset, label_name, temperature in zip(datasets, label_names, temperatures):
+    for label_name in label_names:
         model_dir = os.path.join(results_dir, f'dataset_{dataset}', f'task_{label_name}', f'temperature_{temperature}')
         os.makedirs(model_dir, exist_ok=True)
 
