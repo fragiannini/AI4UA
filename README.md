@@ -18,11 +18,11 @@ To run the code,
 
 - [x] Return Gumbel-Softmax outputs
 - [x] Save model weights
+- [x] Plot concepts (subgraphs) such that the higher the ID, the higher the node appears in the figure (directed graph)
+- [x] Setup out-of-distribution experiments (after the whole pipeline is built)
 - [ ] Plot t-SNE reduction of the embedding space
-- [ ] Plot concepts (subgraphs) such that the higher the ID, the higher the node appears in the figure (directed graph)  
-  - [ ] https://tenpy.readthedocs.io/en/v0.8.1/notebooks/10_visualize_lattice.html  
-  - [ ] https://github.com/dylanljones/lattpy  
-- [ ] Out-of-distribution experiments (after the whole pipeline is built)
+- [ ] Write nice code to compute concept completeness and purity
+- [ ] Start writing the paper (**after all experiments are done**)
 
 
 # Contributing
