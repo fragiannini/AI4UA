@@ -26,16 +26,26 @@ def load_data(dataset_name, label_name, root_dir='../gnn4ua/datasets/', generali
         test_mask = []
         n_nodes_seen = 0
         for i, matrix in enumerate(adjacency_matrices):
-            # TODO: make matrix symmetric?
             # generate the indices of the nonzero elements in the adjacency matrix
-            matrix_with_self_loops = np.array(matrix) + np.eye(len(matrix))
-            matrix_indices = torch.nonzero(torch.tensor(matrix_with_self_loops, dtype=torch.float)).tolist()
+            matrix = np.array(matrix)
+            symmetric_matrix_with_self_loops = matrix + np.eye(len(matrix)) + matrix.T
+            # safety check: the matrix should be symmetric and with a maximum value of 1
+            assert np.allclose(symmetric_matrix_with_self_loops, symmetric_matrix_with_self_loops.T, rtol=1e-05, atol=1e-08)
+            assert np.max(symmetric_matrix_with_self_loops) == 1
+
+            # get edge indexes
+            matrix_indices = torch.nonzero(torch.tensor(symmetric_matrix_with_self_loops, dtype=torch.float)).tolist()
             matrix_indices_shifted = [(index[0] + n_nodes_seen, index[1] + n_nodes_seen) for index in matrix_indices]
             edge_indices.extend(matrix_indices_shifted)
 
             # generate the labels
-            label = df[label_name].values[i].astype(int)
-            labels.append(torch.LongTensor([1-label, label]))
+            if label_name == 'multilabel':
+                label_names = list(set(df.columns).difference(['ID', 'Cardinality', 'LoE_matrix', 'Adj_matrix']))
+                label_values = df[label_names].values[i].astype(int)
+                labels.append(torch.LongTensor(label_values))
+            else:
+                label = df[label_name].values[i].astype(int)
+                labels.append(torch.LongTensor([1-label, label]))
 
             # generate the batch index
             batch.extend(torch.LongTensor([i] * len(matrix)))
