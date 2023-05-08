@@ -5,6 +5,7 @@ import torch
 
 from sklearn.cluster import KMeans
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
 
 
 def completeness_score(embeddings, y, train_index, test_index,
@@ -23,7 +24,7 @@ def completeness_score(embeddings, y, train_index, test_index,
     y_pred = classifier.predict(concepts)
 
     # evaluate predictions on test set and save results
-    return roc_auc_score(y[test_index].detach(), y_pred[test_index])
+    return roc_auc_score(y[test_index].detach(), y_pred[test_index]), y_pred
 
 
 def find_cluster_centroids(concepts):

@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import roc_auc_score, accuracy_score
+from sklearn.metrics import roc_auc_score, accuracy_score, recall_score, precision_score
 import torch
 import os
 
@@ -24,7 +24,7 @@ def main():
     random_states = np.random.RandomState(42).randint(0, 1000, size=3)
     dataset = 'samples_50_saved'
     temperature = 1
-    label_names = ["Distributive", "Modular", "Meet_SemiDistributive", "Join_SemiDistributive", "SemiDistributive"]
+    label_names = ["multilabel", "Distributive", "Modular", "Meet_SemiDistributive", "Join_SemiDistributive", "SemiDistributive"]
     generalization_modes = ['weak', 'strong']
     train_epochs = 100
     emb_size = 16
@@ -39,7 +39,7 @@ def main():
     os.makedirs(results_dir, exist_ok=True)
 
     results = []
-    cols = ['task', 'generalization', 'model', 'test_auc', 'train_auc', 'n_layers', 'temperature', 'emb_size', 'learning_rate', 'train_epochs', 'max_size_train', 'max_prob_train']
+    cols = ['task', 'generalization', 'model', 'completeness', 'fidelity', 'n_layers', 'temperature', 'emb_size', 'learning_rate', 'train_epochs', 'max_size_train', 'max_prob_train']
     for label_name in label_names:
         model_dir = os.path.join(results_dir, f'task_{label_name}/models/')
         os.makedirs(model_dir, exist_ok=True)
@@ -75,20 +75,25 @@ def main():
                     for param in gnn.parameters():
                         param.requires_grad = False
                     y_pred, node_concepts, graph_concepts = gnn.forward(data)
+                    if label_name != 'multilabel':
+                        y_pred = torch.log_softmax(y_pred, dim=-1)
 
-                    if isinstance(gnn, HierarchicalGCN):
-                        final_concepts = graph_concepts[-1]
+                    if isinstance(gnn, BlackBoxGNN):
+                        clustering = True
+                        k = 8
+                        completeness, y_pred_interpretable = completeness_score(graph_concepts.detach(), data.y, train_index, test_index, random_state, clustering, k)
+                        if label_name == 'multilabel':
+                            fidelity = recall_score(y_pred>0, y_pred_interpretable, average='weighted')
+                        else:
+                            fidelity = recall_score(y_pred.argmax(dim=-1), y_pred_interpretable.argmax(axis=-1))
                     else:
-                        final_concepts = graph_concepts
-
-                    clustering = True
-                    k = 8
-                    completeness = completeness_score(final_concepts.detach(), data.y, train_index, test_index, random_state, clustering, k)
+                        completeness = roc_auc_score(data.y[test_index].detach(), y_pred[test_index].detach())
+                        fidelity = 1.0
 
                     print(f'Test accuracy: {completeness:.4f}')
-                    results.append([label_name, generalization, gnn.__class__.__name__, completeness, None, n_layers, temperature,
+                    results.append([label_name, generalization, gnn.__class__.__name__, completeness, fidelity, n_layers, temperature,
                                     emb_size, learning_rate, train_epochs, max_size_train, max_prob_train])
-                    pd.DataFrame(results, columns=cols).to_csv(os.path.join(metrics_dir, 'completeness.csv'))
+                    pd.DataFrame(results, columns=cols).to_csv(os.path.join(metrics_dir, 'completeness_fidelity.csv'))
 
 
 if __name__ == '__main__':
