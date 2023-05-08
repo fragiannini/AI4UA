@@ -20,9 +20,11 @@ To run the code,
 - [x] Save model weights
 - [x] Plot concepts (subgraphs) such that the higher the ID, the higher the node appears in the figure (directed graph)
 - [x] Setup out-of-distribution experiments (after the whole pipeline is built)
-- [ ] Plot t-SNE reduction of the embedding space
-- [ ] Write nice code to compute concept completeness and purity
-- [ ] Start writing the paper (**after all experiments are done**)
+- [x] Plot UMAP reduction of the embedding space
+- [x] Write nice code to compute concept completeness
+- [x] Start writing the paper (**after all experiments are done**) 
+- [ ] Add hard generalization setup (train with lattices of size <=7)  
+- [ ] Write nice code to compute concept purity
 
 
 # Contributing
