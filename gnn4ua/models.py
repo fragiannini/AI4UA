@@ -46,8 +46,8 @@ class GCoRe(GraphNet):
 
         # last, we apply a set of linear layers to get the final prediction
         self.dense_layers = torch.nn.Sequential(
-            Linear(emb_size, emb_size),
-            torch.nn.LeakyReLU(),
+            # Linear(emb_size, emb_size),
+            # torch.nn.LeakyReLU(),
             Linear(emb_size, n_classes)
         )
 
@@ -63,7 +63,7 @@ class GCoRe(GraphNet):
         node_concepts = F.gumbel_softmax(x, tau=self.temperature, hard=self.hard)
         graph_concepts = global_max_pool(node_concepts, batch)
         x = self.dense_layers(graph_concepts)
-        return torch.softmax(x, dim=-1), node_concepts, graph_concepts
+        return x, node_concepts, graph_concepts
 
 
 class HierarchicalGCN(GraphNet):
@@ -94,8 +94,8 @@ class HierarchicalGCN(GraphNet):
 
         # last, we apply a set of linear layers to get the final prediction
         self.dense_layers = torch.nn.Sequential(
-            Linear(emb_size, emb_size),
-            torch.nn.LeakyReLU(),
+            # Linear(emb_size, emb_size),
+            # torch.nn.LeakyReLU(),
             Linear(emb_size, n_classes)
         )
 
@@ -113,7 +113,7 @@ class HierarchicalGCN(GraphNet):
             x = F.leaky_relu(x)
 
         x = self.dense_layers(graph_concept)
-        return torch.softmax(x, dim=-1), node_concepts, graph_concepts
+        return x, node_concepts, graph_concepts
 
     def internal_loss(self, graph_concepts, y, loss_form, data_index):
         loss = 0
@@ -145,8 +145,8 @@ class BlackBoxGNN(GraphNet):
 
         # last, we apply a set of linear layers to get the final prediction
         self.dense_layers = torch.nn.Sequential(
-            Linear(emb_size, emb_size),
-            torch.nn.LeakyReLU(),
+            # Linear(emb_size, emb_size),
+            # torch.nn.LeakyReLU(),
             Linear(emb_size, n_classes)
         )
 
@@ -159,6 +159,6 @@ class BlackBoxGNN(GraphNet):
             if i < n_layers - 1:
                 x = F.leaky_relu(x)
 
-        x = global_max_pool(x, batch)
-        x = self.dense_layers(x)
-        return torch.softmax(x, dim=-1), None, None
+        cemb = global_max_pool(x, batch)
+        x = self.dense_layers(cemb)
+        return x, None, cemb
