@@ -47,7 +47,7 @@ def get_samples_to_plot(gnn, data, task_id, layer_id, figures_dir, all_labels,
         graph_sizes_sorted_idx = torch.argsort(graph_sizes[concept_indexes].long(), descending=False)
         concept_indexes_sorted = concept_indexes[graph_sizes_sorted_idx][:n_concepts]
 
-        nc = 3 if task_state == 0 else 1
+        nc = 2 if task_state == 0 else 1
         if len(concept_indexes_sorted) < nc:
             print('Not enough concepts to plot')
             continue
@@ -68,12 +68,59 @@ def get_samples_to_plot(gnn, data, task_id, layer_id, figures_dir, all_labels,
     return samples2d, saved_imgs, concepts2d, correct_pred_mask, concept_id
 
 
+def get_samples_to_plot2(gnn, data, figures_dir, all_labels,
+                         n_concepts=5, random_state=42):
+    full_names = ['Meet Semi-Distributive',
+                  'Distributive',
+                  'Join Semi-Distributive',
+                  'Modular',
+                  'Semi-Distributive']
+    seed_everything(random_state)
+    y_pred, node_concepts, graph_concepts = gnn.forward(data)
+    edge_indexes = pyg.utils.unbatch_edge_index(data.edge_index, data.batch)
+    graph_sizes = torch.LongTensor([len(torch.unique(eidx.ravel())) for eidx in edge_indexes])
+
+    correct_pred_mask = torch.sum(data.y == (y_pred > 0), axis=1) == data.y.shape[1]
+    all_ok = torch.BoolTensor(len(correct_pred_mask))
+    for task_id, task_name in enumerate(all_labels):
+        other_tasks = [i for i in range(len(all_labels)) if i != task_id]
+        n_other_tasks_active = torch.sum(data.y[:, other_tasks] != 0, dim=1) > 0
+        concept_mask = (data.y[:, task_id] == 0) & \
+                       n_other_tasks_active & \
+                       correct_pred_mask & \
+                       all_ok
+
+        concept_indexes = torch.argwhere(concept_mask).flatten()
+        graph_sizes_sorted_idx = torch.argsort(graph_sizes[concept_indexes].long(), descending=False)
+        concept_indexes_sorted = concept_indexes[graph_sizes_sorted_idx]#[:n_concepts]
+        if len(concept_indexes_sorted) > 0:
+            size = min([n_concepts, len(concept_indexes_sorted)])
+            plt.figure(figsize=[2.5*size, 2.5])
+            plt.suptitle(f'Non {full_names[task_id]} Lattice Varieties', fontsize=30)
+            rnd_idx = np.random.RandomState(random_state).choice(len(concept_indexes_sorted), size=size, replace=False)
+            for pid, graph_id in enumerate(concept_indexes_sorted[rnd_idx]):
+            # for graph_id in concept_indexes_sorted:
+                all_ok[graph_id] = False
+                active_task_names = '-'.join([all_labels[i] for i, yi in enumerate(data.y[graph_id]) if yi != 0])
+                active_full_names = '-'.join([full_names[i] for i, yi in enumerate(data.y[graph_id]) if yi != 0])
+
+                edge_index = edge_indexes[graph_id]
+                plt.subplot(1, size, pid+1)
+                plt.title(f'{active_full_names}', fontsize=18)
+                visualize_lattice(edge_index, node_size=300)
+
+            plt.tight_layout()
+            plt.savefig(os.path.join(figures_dir, f'task_{task_name}_graph_id_{int(graph_id)}.png'), transparent=True, dpi=20)
+            plt.savefig(os.path.join(figures_dir, f'task_{task_name}_graph_id_{int(graph_id)}.pdf'))
+            plt.show()
+
+
 def visualize_concept_space(samples2d, saved_imgs, concepts2d, correct_pred_mask, data, task_id, full_names, cmap, cols, ax):
     legend_patches = []
     # plt.scatter(concepts2d[:, 0], concepts2d[:, 1], c=data.y[:, task_id], alpha=0.01, marker='.', s=5,
     #             edgecolors=None, clip_on=False, cmap=cmap)
-    sns.kdeplot(x=concepts2d[:, 0], y=concepts2d[:, 1], hue=data.y[correct_pred_mask, task_id] > 0, fill=False,
-                alpha=0.15, linewidth=0, clip_on=False, cmap=cmap)
+    sns.kdeplot(x=concepts2d[:, 0], y=concepts2d[:, 1], hue=data.y[correct_pred_mask, task_id] > 0,
+                fill=True, levels=3, alpha=0.3, linewidth=0, clip_on=False, color=cols)
     # sns.scatterplot(x=concepts2d[:, 0], y=concepts2d[:, 1], hue=data.y[correct_pred_mask, task_id] > 0, marker='.',
     #                 alpha=0.005, cmap=cmap)
 
@@ -85,7 +132,31 @@ def visualize_concept_space(samples2d, saved_imgs, concepts2d, correct_pred_mask
         imagebox = OffsetImage(saved_imgs[sample_id], zoom=.7)
         ab = AnnotationBbox(imagebox, samples2d[sample_id], frameon=False)
         ax.add_artist(ab)
-    plt.legend(handles=legend_patches, fontsize=12)
+    plt.legend(handles=legend_patches, fontsize=11, loc='upper center',
+          bbox_to_anchor=(0.45, -0.2), frameon=False,
+           fancybox=False, shadow=False, ncol=2)
+
+
+def visualize_concept_space2(samples2d, saved_imgs, concepts2d, correct_pred_mask, data, full_names, cols, ax):
+    legend_patches = []
+    # plt.scatter(concepts2d[:, 0], concepts2d[:, 1], c=data.y[:, task_id], alpha=0.01, marker='.', s=5,
+    #             edgecolors=None, clip_on=False, cmap=cmap)
+    sns.kdeplot(x=concepts2d[:, 0], y=concepts2d[:, 1], hue=data.y[correct_pred_mask] > 0,
+                fill=True, levels=4, alpha=0.3, linewidth=0, clip_on=False, color=cols)
+    # sns.scatterplot(x=concepts2d[:, 0], y=concepts2d[:, 1], hue=data.y[correct_pred_mask, task_id] > 0, marker='.',
+    #                 alpha=0.005, cmap=cmap)
+
+    base_name = full_names[task_id].replace('_', ' ')
+    for col, l_name in zip(cols, ['Non-' + base_name, base_name]):
+        legend_patches.append(Patch(facecolor=col, label=l_name, alpha=0.4))
+    # plt.scatter(samples2d[:, 0], samples2d[:, 1], s=1500, c=cols[0], alpha=0.3, clip_on=False)
+    for sample_id in range(len(samples2d)):
+        imagebox = OffsetImage(saved_imgs[sample_id], zoom=.7)
+        ab = AnnotationBbox(imagebox, samples2d[sample_id], frameon=False)
+        ax.add_artist(ab)
+    plt.legend(handles=legend_patches, fontsize=14 , loc='upper center',
+          bbox_to_anchor=(0.5, -0.2), frameon=False,
+           fancybox=False, shadow=False, ncol=2)
 
 
 def visualize_lattice(edge_index, node_size=200, node_color='k', with_labels=False):

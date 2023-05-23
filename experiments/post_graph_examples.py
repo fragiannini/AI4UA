@@ -30,8 +30,12 @@ def main():
     random_states = np.random.RandomState(42).randint(0, 1000, size=3)
     dataset = 'samples_50_saved'
     temperature = 1
-    full_names = ["Distributive", "Modular", "Meet_SemiDistributive", "Join_SemiDistributive", "SemiDistributive"]
-    all_labels = ["D", "M", "MSD", "JSD", "SD"]
+    full_names = ['Meet_SemiDistributive',
+                 'Distributive',
+                 'Join_SemiDistributive',
+                 'Modular',
+                 'SemiDistributive']
+    all_labels = ["MSD", "D", "JSD", "M", "SD"]
     label_names = ["multilabel"]
     generalization_modes = ['weak']
     train_epochs = 200
@@ -89,15 +93,17 @@ def main():
                         param.requires_grad = False
                     y_pred, node_concepts, graph_concepts = gnn.forward(data)
 
-                    plt.figure(figsize=[6, 2])
-                    plt.title(f'Interpretable Classifier Weights', fontsize=16)
-                    sns.heatmap(gnn.dense_layers[0].weight, cmap='vlag', square=True)
-                    plt.xlabel('Concept ID', fontsize=12)
-                    plt.ylabel('Task label', fontsize=12)
-                    plt.yticks(ticks=np.arange(0, 5)+0.5, labels=all_labels, rotation=0, fontsize=12)
+                    plt.figure(figsize=[3, 4])
+                    plt.title(f'HiGNN Classifier [L7]', fontsize=18)
+                    sns.heatmap(gnn.dense_layers[0].weight.T, cmap='vlag', square=False)
+                    plt.ylabel('Concept ID', fontsize=16)
+                    plt.xlabel('Task label', fontsize=16)
+                    plt.xticks(ticks=np.arange(0, 5)+0.5, labels=all_labels, rotation=0, fontsize=12)
+                    yt = np.arange(0, emb_size)
+                    plt.yticks(ticks=yt+0.5, rotation='horizontal', fontsize=14)
                     plt.tight_layout()
-                    plt.savefig(os.path.join(summary_figures_dir, f'classifier_weights.png'))
-                    plt.savefig(os.path.join(summary_figures_dir, f'classifier_weights.pdf'))
+                    plt.savefig(os.path.join(summary_figures_dir, f'classifier_weights.png'), bbox_inches='tight')
+                    plt.savefig(os.path.join(summary_figures_dir, f'classifier_weights.pdf'), bbox_inches='tight')
                     plt.show()
 
                     layer_ids = [7, 2]
@@ -109,15 +115,15 @@ def main():
                                 samples2d, saved_imgs, concepts2d, correct_pred_mask, cid = get_samples_to_plot(gnn, data, task_id, layer_id, figures_dir, all_labels, concept_idx, n_concepts, random_state)
 
                                 base_name = full_names[task_id].replace('_', ' ')
-                                fig, ax = plt.subplots(figsize=(6, 4))
-                                plt.title(f'Concept {cid.item()} [L{layer_id}]', fontsize=18)
+                                fig, ax = plt.subplots(figsize=(5, 3.5))
+                                plt.title(f'Concept {cid.item()} [L{layer_id}]', fontsize=22)
                                 visualize_concept_space(samples2d, saved_imgs, concepts2d, correct_pred_mask, data, task_id, full_names, cmap, cols, ax)
-                                plt.xlabel('UMAP 1st component', fontsize=14)
-                                plt.ylabel('UMAP 2nd component', fontsize=14)
+                                plt.xlabel('UMAP 1st PC', fontsize=14)
+                                plt.ylabel('UMAP 2nd PC', fontsize=14)
                                 sns.despine(offset=0)
                                 plt.tight_layout()
-                                plt.savefig(os.path.join(summary_figures_dir, f'task_{label_name}_{base_name}_layer_{layer_id}_cid_{cid.item()}.png'))
-                                plt.savefig(os.path.join(summary_figures_dir, f'task_{label_name}_{base_name}_layer_{layer_id}_cid_{cid.item()}.pdf'))
+                                plt.savefig(os.path.join(summary_figures_dir, f'task_{label_name}_{base_name}_layer_{layer_id}_cid_{cid.item()}.png'), bbox_inches='tight')
+                                plt.savefig(os.path.join(summary_figures_dir, f'task_{label_name}_{base_name}_layer_{layer_id}_cid_{cid.item()}.pdf'), bbox_inches='tight')
                                 plt.show()
 
                     break

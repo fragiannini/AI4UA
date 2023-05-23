@@ -52,7 +52,7 @@ def main():
             results_task = results[results['task'] == task]
 
             ax = plt.subplot(1, len(tasks), task_id+1)
-            plt.title(F'{task_name}', fontsize=16)
+            plt.title(F'{task_name}', fontsize=25)
             col_id = 0
             legend_patches = []
             for model in models:
@@ -62,12 +62,15 @@ def main():
                     results_task_sem = results_task_gb.sem()*100
                     ax.errorbar(results_task_mean.loc[model].loc[generalization_mode, 'completeness'],
                                  results_task_mean.loc[model].loc[generalization_mode, 'fidelity'],
-                                 results_task_sem.loc[model].loc[generalization_mode, 'completeness'],
                                  results_task_sem.loc[model].loc[generalization_mode, 'fidelity'],
+                                 results_task_sem.loc[model].loc[generalization_mode, 'completeness'],
+                                 # results_task_sem.loc[model].loc[generalization_mode, 'fidelity'],
                                  capsize=5, elinewidth=3, capthick=2, fmt='.', color=cols[col_id])
-                    ax.set_xlabel('COMPLETENESS \%', fontsize=13)
+
+                    ax.set_xlabel('COMPLETENESS \%', fontsize=20)
+                    ax.tick_params(axis='both', which='major', labelsize=14)
                     if task_id == 0:
-                        ax.set_ylabel('FIDELITY \%', fontsize=13)
+                        ax.set_ylabel('FIDELITY \%', fontsize=20)
 
                     if model == 'GCoRe':
                         model_name = 'iGNN'
@@ -75,16 +78,21 @@ def main():
                         model_name = 'Black-Box GNN'
                     else:
                         model_name = 'HiGNN'
-                    legend_patches.append(Patch(facecolor=cols[col_id], label=f'{model_name} [{generalization_mode} mode]'))
+                    if generalization_mode == 'strong':
+                        legend_patches.append(Patch(facecolor=cols[col_id], label=f'{model_name} ({generalization_mode})'))
+                    else:
+                        legend_patches.append(Patch(facecolor=cols[col_id], label=f'{model_name}'))
                     col_id += 1
 
             ax.set_xlim(right=100)
-            ax.set_ylim(top=100.5)
+            ax.set_ylim(top=100.4)
 
-        plt.legend(handles=legend_patches, fontsize=12, loc='upper center',
+        plt.legend(handles=legend_patches, fontsize=22, loc='upper center',
           # bbox_to_anchor=(-0.8, -0.2),
-          bbox_to_anchor=(-2.8, -0.2), frameon=False,
+          bbox_to_anchor=(-2.6, -0.2), frameon=False,
            fancybox=False, shadow=False, ncol=6)
+
+        sns.despine(offset=0)
         # plt.legend(ncol=3, loc='upper center', bbox_to_anchor=(0.5, -0.05))
         plt.savefig(f'{plot_file}.png', bbox_inches='tight')
         plt.savefig(f'{plot_file}.pdf', bbox_inches='tight')

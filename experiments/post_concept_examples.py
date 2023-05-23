@@ -29,7 +29,12 @@ def main():
     random_states = np.random.RandomState(42).randint(0, 1000, size=3)
     dataset = 'samples_50_saved'
     temperature = 1
-    label_names = ["Distributive", "Modular", "Meet_SemiDistributive", "Join_SemiDistributive", "SemiDistributive"]
+    label_names = ['Meet_SemiDistributive',
+                 'Distributive',
+                 'Join_SemiDistributive',
+                 'Modular',
+                 'SemiDistributive']
+    all_labels = ["MSD", "D", "JSD", "M", "SD"]
     generalization_modes = ['weak']
     train_epochs = 200
     emb_size = 16
